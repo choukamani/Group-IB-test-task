@@ -6,7 +6,7 @@ from agent.agent import ask_agent
 
 st.title("Weather Agent UI")
 
-question = st.text_input("Pose ta question météo (ex: météo à Paris demain)")
+question = st.text_input("Ask your weather question (e.g.: weather in Paris tomorrow)")
 
 if st.button("Envoyer") and question:
     with st.spinner("Réfléchit..."):
