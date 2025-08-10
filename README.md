@@ -70,7 +70,7 @@ group-ib-test-task/
    - Start the Ollama server locally.
    - To change the model, use `ollama pull <model_name>` and update `model_loader.py`.
 
-5. **(Optional) Configure environment variables:**
+5. **Configure environment variables:**
    - By default, MCP server runs at `http://localhost:8000`. If you change it, set `MCP_SERVER_URL` in your environment.
 
 ---
