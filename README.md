@@ -1,153 +1,155 @@
 
+
 # Weather Agent Project
 
-Un agent météo intelligent basé sur un LLM local utilisant LangChain et Ollama. Il répond aux questions météo en interrogeant des APIs via un serveur proxy MCP. Le projet est modulaire : backend API, agent intelligent et interface web Streamlit.
+An intelligent weather agent based on a local LLM using LangChain and Ollama. It answers weather questions by querying APIs via an MCP proxy server. The project is modular: backend API, intelligent agent, and Streamlit web interface.
 
-## Table des matières
+## Table of Contents
 
-- [Présentation](#présentation)
-- [Structure du projet](#structure-du-projet)
+- [Overview](#overview)
+- [Project Structure](#project-structure)
 - [Installation](#installation)
-- [Utilisation](#utilisation)
-- [Endpoints API](#endpoints-api)
+- [Usage](#usage)
+- [API Endpoints](#api-endpoints)
 - [Agent](#agent)
-- [Interface utilisateur](#interface-utilisateur)
+- [User Interface](#user-interface)
 - [Configuration](#configuration)
-- [Dépendances](#dépendances)
-
-
----
-
-## Présentation
-
-Ce projet propose un système de question/réponse météo propulsé par un LLM local (Ollama) et LangChain. Il récupère les données météo via des APIs externes, traite les requêtes utilisateur et affiche les résultats dans une interface web.
-
-Nous utilisons un modèle open source sur Ollama (par exemple, `llama2`, `mistral` ...), mais il est possible d'utiliser n'importe quel autre modèle open source compatible avec Ollama. Il suffit de le télécharger et de l'activer via Ollama.
+- [Dependencies](#dependencies)
 
 ---
 
-## Structure du projet
+## Overview
+
+This project provides a weather question-answering system powered by a local LLM (Ollama) and LangChain. It fetches weather data via external APIs, processes user queries, and displays results in a web interface.
+
+We use an open-source model on Ollama (e.g., `llama2`, `mistral`, etc.), but you can use any other open-source model compatible with Ollama. Just download and activate it via Ollama.
+
+---
+
+## Project Structure
 
 ```
 weather_agent_project/
 │
 ├── agent/
-│   ├── agent.py           # Logique principale de l'agent (LangChain, outils)
-│   ├── model_loader.py    # Chargement des modèles LLM (Ollama)
-│   ├── tools.py           # Outils personnalisés pour l'agent
-│   
+│   ├── agent.py           # Main agent logic (LangChain, tools)
+│   ├── model_loader.py    # Loads LLM models (Ollama)
+│   ├── tools.py           # Custom tools for the agent
 │
 ├── mcp_server/
-│   ├── main.py            # Serveur FastAPI avec endpoints
-│   ├── requirements.txt   # Dépendances serveur
-│   └── weather_api.py     # Intégration API météo
+│   ├── main.py            # FastAPI server with endpoints
+│   ├── requirements.txt   # Server dependencies
+│   └── weather_api.py     # Weather API integration
 │
 ├── ui/
-│   └── app.py             # Interface Streamlit
+│   └── app.py             # Streamlit interface
 │
-├── requirements.txt       # Dépendances globales
+├── requirements.txt       # Global dependencies
 ├── README.md              # Documentation
-└── .env                   # Configuration 
+└── .env                   # Configuration
 ```
 
 ---
 
 ## Installation
 
-1. **Cloner le dépôt :**
-	 ```bash
-	 git clone <repo_url>
-	 cd weather_agent_project
-	 ```
+1. **Clone the repository:**
+	```bash
+	git clone <repo_url>
+	cd weather_agent_project
+	```
 
-2. **Installer les dépendances Python :**
-	 ```bash
-	 pip install -r requirements.txt
-	 ```
+2. **Install Python dependencies:**
+	```bash
+	pip install -r requirements.txt
+	```
 
-3. **Installer les dépendances du serveur MCP :**
-	 ```bash
-	 cd mcp_server
-	 pip install -r requirements.txt
-	 cd ..
-	 ```
+3. **Install MCP server dependencies:**
+	```bash
+	cd mcp_server
+	pip install -r requirements.txt
+	cd ..
+	```
 
-4. **Installer et lancer Ollama :**
-	 - Télécharger Ollama sur [ollama.com](https://ollama.com/).
-	 - Installer un modèle open source (ex : `ollama pull llama2`).
-	 - Démarrer le serveur Ollama localement.
-	 - Pour changer de modèle, utiliser la commande `ollama pull <nom_du_modele>` puis le sélectionner dans la config.
+4. **Install and run Ollama:**
+	- Download Ollama from [ollama.com](https://ollama.com/).
+	- Install an open-source model (e.g., `ollama pull llama2`).
+	- Start the Ollama server locally.
+	- To change the model, use `ollama pull <model_name>` and select it in the config.
 
+5. **Configure environment variables:**
+	- Create a `.env` file at the project root.
+	- Add API keys and configuration (see below).
 
+---
 
-## Utilisation
+## Usage
 
-### 1. Démarrer le serveur MCP
+### 1. Start the MCP server
 
 ```bash
 cd mcp_server
 uvicorn main:app --reload
 ```
 
-Le serveur expose les endpoints pour les coordonnées et la météo.
+The server exposes endpoints for coordinates and weather data.
 
+### 2. Launch the Streamlit interface
 
-### 2. Lancer l'interface Streamlit
-
-Lancez la commande suivante depuis la racine du projet :
+Run the following command from the project root:
 
 ```bash
 streamlit run ui/app.py
 ```
 
-Accédez à l'interface web sur `http://localhost:8501`.
+Access the web interface at `http://localhost:8501`.
 
-### 3. Interagir avec l'agent
+### 3. Interact with the agent
 
-- Saisir une question météo dans l'UI.
-- L'agent utilise LangChain et Ollama pour traiter la requête et récupérer les données via le serveur MCP.
+- Enter a weather question in the UI.
+- The agent uses LangChain and Ollama to process the query and fetch data via the MCP server.
 
 ---
 
-## Endpoints API
+## API Endpoints
 
-Le serveur MCP propose :
+The MCP server provides:
 
-- `GET /coordinates?city=<nom_ville>`  
-	Retourne la latitude et la longitude pour une ville donnée.
+- `GET /coordinates?city=<city_name>`  
+	Returns latitude and longitude for a given city.
 
 - `GET /weather?lat=<latitude>&lon=<longitude>`  
-	Retourne les données météo pour les coordonnées spécifiées.
+	Returns weather data for the specified coordinates.
 
 ---
 
 ## Agent
 
-- **LangChain** : Orchestration du raisonnement LLM et des outils.
-- **Ollama** : Backend LLM local pour la compréhension du langage naturel.
-- **Outils personnalisés** : Intégration avec les endpoints MCP pour récupérer la météo et les coordonnées.
-- **Modèles open source** : Possibilité d'utiliser différents modèles open source disponibles sur Ollama (`llama2`, `mistral`, `gemma`, etc.).
+- **LangChain**: Orchestrates LLM reasoning and tools.
+- **Ollama**: Local backend for running open-source LLMs for natural language processing.
+- **Custom tools**: Integration with MCP endpoints to fetch weather and coordinates.
+- **Open-source models**: Ability to use different open-source models available on Ollama (`llama2`, `mistral`, `gemma`, etc.).
 
 ---
 
-## Interface utilisateur
+## User Interface
 
-- **Streamlit** : Interface web interactive.
-- **Fonctionnalités** :
-	- Zone de saisie pour les questions
-	- Affichage des réponses de l'agent
-	- Gestion des erreurs et messages d'état
+- **Streamlit**: Interactive web interface.
+- **Features**:
+	- Input box for questions
+	- Display of agent responses
+	- Error handling and status messages
 
+---
 
-
-## Dépendances
+## Dependencies
 
 - Python 3.10+
 - [LangChain](https://python.langchain.com/)
 - [Ollama](https://ollama.com/)
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [Streamlit](https://streamlit.io/)
-- Autres dépendances dans `requirements.txt` et `mcp_server/requirements.txt`
+- Other dependencies in `requirements.txt` and `mcp_server/requirements.txt`
 
 ---
 
